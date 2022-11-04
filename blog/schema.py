@@ -74,6 +74,7 @@ class Query(graphene.ObjectType):
         return (
             models.Post.objects.prefetch_related("tags")
             .select_related("author")
+            .prefetch_related("body")
             .filter(published=True)
             .get(slug=slug)
         )
