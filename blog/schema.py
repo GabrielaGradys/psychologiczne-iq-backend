@@ -4,6 +4,7 @@ from django.db.models import Q
 from graphene_django import DjangoObjectType
 from django.contrib.contenttypes.models import ContentType as DjangoContentType
 
+import blogPosts.schema
 from . import models
 
 
@@ -74,7 +75,7 @@ class Query(graphene.ObjectType):
         return (
             models.Post.objects.prefetch_related("tags")
             .select_related("author")
-            .select_related("body")
+            .prefetch_related("grade")
             .filter(published=True)
             .get(slug=slug)
         )
