@@ -68,8 +68,8 @@ class Query(graphene.ObjectType):
             .select_related("author")
             .filter(published=True)
             .filter(~Q(slug=slug))
-            .filter(tags__name__in=orginal_tags)[:3]
-            .distinct()
+            .filter(tags__name__in=orginal_tags)
+            .distinct()[:3]
         )
 
     def resolve_post_by_slug(root, info, slug):
