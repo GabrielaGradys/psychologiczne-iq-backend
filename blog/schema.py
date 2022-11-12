@@ -78,7 +78,7 @@ class Query(graphene.ObjectType):
             .prefetch_related("grade")
             .filter(published=True)
             .get(slug=slug)
-        ).distinct()
+        )
 
     def resolve_posts_by_author(root, info, username):
         return (
