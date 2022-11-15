@@ -58,7 +58,7 @@ class Query(graphene.ObjectType):
         return (
             models.Post.objects.prefetch_related("tags")
             .select_related("author")
-            .filter(published=True)[:3]
+            .filter(published=True)
         )
 
     def resolve_related_posts(root, info, slug):
