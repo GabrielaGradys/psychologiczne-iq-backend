@@ -47,6 +47,8 @@ class Query(graphene.ObjectType):
     posts_by_tag = graphene.List(PostType, value=graphene.String())
     posts_by_category = graphene.List(PostType, value=graphene.String())
 
+    all_tags = graphene.List(TagType)
+
     def resolve_all_posts(root, info):
         return (
             models.Post.objects.prefetch_related("tags")
@@ -105,5 +107,10 @@ class Query(graphene.ObjectType):
             .filter(category__name__iexact=value)[:3]
         )
 
+    def resolve_all_tags(root, info):
+        return (
+            models.Tag.objects
+            .all()
+        )
 
 schema = graphene.Schema(query=Query)
