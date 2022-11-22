@@ -96,7 +96,7 @@ class Query(graphene.ObjectType):
             models.Post.objects.prefetch_related("tags")
             .select_related("author")
             .filter(published=True)
-            .filter(tags__name__iexact=value)[:3]
+            .filter(tags__name__iexact=value)
         )
 
     def resolve_posts_by_category(root, info, value):
@@ -104,7 +104,7 @@ class Query(graphene.ObjectType):
             models.Post.objects.prefetch_related("tags")
             .select_related("author")
             .filter(published=True)
-            .filter(category__name__iexact=value)[:3]
+            .filter(category__name__iexact=value)
         )
 
     def resolve_all_tags(root, info):
