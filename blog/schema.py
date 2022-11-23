@@ -113,4 +113,5 @@ class Query(graphene.ObjectType):
             .all()
         )
 
+
 schema = graphene.Schema(query=Query)
