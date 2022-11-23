@@ -18,6 +18,9 @@ class Paragraph(models.Model):
         to_field='title'
     )
 
+    class Meta:
+        ordering = ["id"]
+
     def __str__(self):
         return self.title
 
