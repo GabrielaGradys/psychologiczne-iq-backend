@@ -9,22 +9,53 @@ import nested_admin
 @admin.register(Author)
 class ProfileAdmin(admin.ModelAdmin):
     model = Author
+    list_display = (
+        "user",
+        "website",
+        "bio",
+    )
+    list_editable = (
+        "website",
+        "bio",
+    )
 
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     model = Tag
+    list_display = (
+        "id",
+        "name",
+        "description",
+    )
+    list_editable = (
+        "name",
+        "description",
+    )
+    search_fields = (
+        "name",
+    )
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     model = Category
+    list_display = (
+        "name",
+        "description",
+    )
+    list_editable = (
+        "description",
+    )
+    search_fields = (
+        "name",
+    )
 
 
 class ParagraphInline(nested_admin.NestedStackedInline):
     model = Paragraph
     inlines = [ElementsInline]
-    extra = 0
+    extra = 1
 
 
 @admin.register(Post)
@@ -46,31 +77,28 @@ class PostAdmin(nested_admin.NestedModelAdmin):
     inlines = [GradeInline, ParagraphInline]
     extra = 0
     list_display = (
-        "id",
         "title",
         "subtitle",
-        "teaser",
         'category',
         "published",
+        "publish_date",
     )
     list_filter = (
         "published",
-        "publish_date",
         "tags",
         "category",
-        "author"
+        "publish_date",
+        "author",
     )
     list_editable = (
-        "title",
         "subtitle",
-        "teaser",
-        'category',
+        "category",
         "published",
+        "publish_date"
     )
     search_fields = (
         "title",
         "subtitle",
-        "body",
     )
     date_hierarchy = "publish_date"
     save_on_top = True
