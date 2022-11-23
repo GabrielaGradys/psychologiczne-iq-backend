@@ -58,6 +58,7 @@ class Button(models.Model):
     ]
     type = models.CharField(choices=TYPES, default='File', max_length=4)
     color = models.CharField(choices=COLORS, default='Yellow', max_length=15)
+    text = models.CharField(max_length=100, blank=True)
     link = models.URLField(blank=True)
     file = models.FileField(upload_to='uploads/', blank=True)
     elements = models.ForeignKey(
