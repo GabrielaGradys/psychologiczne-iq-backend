@@ -4,6 +4,10 @@ from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 
 
+def get_default_author():
+    return Author.objects.get(id=1)
+
+
 class Post(models.Model):
     class Meta:
         ordering = ["-publish_date"]
@@ -32,7 +36,7 @@ class Post(models.Model):
         related_name='post_by_tag',
         related_query_name='post_by_tag'
     )
-    author = models.ForeignKey('Author', on_delete=models.PROTECT)
+    author = models.ForeignKey('Author', on_delete=models.PROTECT, default=get_default_author)
 
     def save(self, *args, **kwargs):
         self.slug = f'{f"{self.category}".lower()}/{slugify(self.title)}'

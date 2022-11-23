@@ -43,6 +43,52 @@ class TextWithImage(models.Model):
         return f'{self.id}'
 
 
+class Button(models.Model):
+    TYPES = [
+        ('File', 'File'),
+        ('Link', 'Link'),
+    ]
+    COLORS = [
+        ('pq_yellow', 'Yellow'),
+        ('pq_light_blue', 'Light Blue'),
+        ('pq_dark_blue', 'Dark Blue'),
+    ]
+    type = models.CharField(choices=TYPES, default='File', max_length=4)
+    color = models.CharField(choices=COLORS, default='Yellow', max_length=15)
+    link = models.URLField(blank=True)
+    file = models.FileField(upload_to='uploads/', blank=True)
+    elements = models.ForeignKey(
+        'Element',
+        blank=True,
+        on_delete=models.CASCADE,
+        default=1
+    )
+
+    def __str__(self):
+        return f'{self.id}'
+
+
+class Tab(models.Model):
+    COLORS = [
+        ('pq_yellow', 'Yellow'),
+        ('pq_light_blue', 'Light Blue'),
+        ('pq_dark_blue', 'Dark Blue'),
+    ]
+    color = models.CharField(choices=COLORS, default='Yellow', max_length=15)
+    title = models.CharField(max_length=200)
+    icon = models.FileField(blank=True)
+    body = RichTextField()
+    elements = models.ForeignKey(
+        'Element',
+        blank=True,
+        on_delete=models.CASCADE,
+        default=1
+    )
+
+    def __str__(self):
+        return f'{self.id}'
+
+
 class Grade(models.Model):
     tag = models.CharField(max_length=300, null=True)
     book_cover = models.FileField()
@@ -87,6 +133,7 @@ class Element(models.Model):
         limit_choices_to=limit,
         null=True,
     )
+    multi_columns = models.BooleanField(default=False)
     paragraphs = models.ForeignKey(
         'Paragraph',
         on_delete=models.CASCADE,
