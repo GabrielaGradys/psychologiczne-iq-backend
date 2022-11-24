@@ -54,7 +54,6 @@ class Button(models.Model):
     COLORS = [
         ('pq_yellow', 'Yellow'),
         ('pq_light_blue', 'Light Blue'),
-        ('pq_dark_blue', 'Dark Blue'),
     ]
     type = models.CharField(choices=TYPES, default='File', max_length=4)
     color = models.CharField(choices=COLORS, default='Yellow', max_length=15)
@@ -76,7 +75,6 @@ class Tab(models.Model):
     COLORS = [
         ('pq_yellow', 'Yellow'),
         ('pq_light_blue', 'Light Blue'),
-        ('pq_dark_blue', 'Dark Blue'),
     ]
     color = models.CharField(choices=COLORS, default='Yellow', max_length=15)
     title = models.CharField(max_length=200)
