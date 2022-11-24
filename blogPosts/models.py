@@ -18,6 +18,9 @@ class Paragraph(models.Model):
         to_field='title'
     )
 
+    class Meta:
+        ordering = ["id"]
+
     def __str__(self):
         return self.title
 
@@ -32,6 +35,51 @@ class TextWithImage(models.Model):
     image = models.FileField(blank=True)
     rich_text = RichTextField()
     image_position = models.CharField(choices=POSITIONS, max_length=2, blank=True)
+    elements = models.ForeignKey(
+        'Element',
+        blank=True,
+        on_delete=models.CASCADE,
+        default=1
+    )
+
+    def __str__(self):
+        return f'{self.id}'
+
+
+class Button(models.Model):
+    TYPES = [
+        ('File', 'File'),
+        ('Link', 'Link'),
+    ]
+    COLORS = [
+        ('pq_yellow', 'Yellow'),
+        ('pq_light_blue', 'Light Blue'),
+    ]
+    type = models.CharField(choices=TYPES, default='File', max_length=4)
+    color = models.CharField(choices=COLORS, default='Yellow', max_length=15)
+    text = models.CharField(max_length=100, blank=True)
+    link = models.URLField(blank=True)
+    file = models.FileField(upload_to='uploads/', blank=True)
+    elements = models.ForeignKey(
+        'Element',
+        blank=True,
+        on_delete=models.CASCADE,
+        default=1
+    )
+
+    def __str__(self):
+        return f'{self.id}'
+
+
+class Tab(models.Model):
+    COLORS = [
+        ('pq_yellow', 'Yellow'),
+        ('pq_light_blue', 'Light Blue'),
+    ]
+    color = models.CharField(choices=COLORS, default='Yellow', max_length=15)
+    title = models.CharField(max_length=200)
+    icon = models.FileField(blank=True)
+    body = RichTextField()
     elements = models.ForeignKey(
         'Element',
         blank=True,
@@ -87,6 +135,7 @@ class Element(models.Model):
         limit_choices_to=limit,
         null=True,
     )
+    multi_columns = models.BooleanField(default=False)
     paragraphs = models.ForeignKey(
         'Paragraph',
         on_delete=models.CASCADE,

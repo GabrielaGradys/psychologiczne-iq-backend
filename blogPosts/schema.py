@@ -22,3 +22,13 @@ class GradeType(DjangoObjectType):
     class Meta:
         model = models.Grade
 
+
+class ButtonType(DjangoObjectType):
+    class Meta:
+        model = models.Button
+
+
+class TabType(DjangoObjectType):
+    class Meta:
+        model = models.Tab
+
