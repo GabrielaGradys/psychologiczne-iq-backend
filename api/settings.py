@@ -13,10 +13,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 import django_on_heroku
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -28,7 +28,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -44,6 +43,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'graphene_django',
     'ckeditor',
+    'storages',
     'blog',
     'blogPosts',
 ]
@@ -51,7 +51,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -85,7 +84,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'api.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -95,7 +93,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -115,7 +112,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -127,13 +123,46 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATIC_ROOT = BASE_DIR / 'collected-static'
+
+S3_ENABLED = config('S3_ENABLED', cast=bool, default=False)
+LOCAL_SERVE_MEDIA_FILES = config('LOCAL_SERVE_MEDIA_FILES', cast=bool, default=not S3_ENABLED)
+LOCAL_SERVE_STATIC_FILES = config('LOCAL_SERVE_STATIC_FILES', cast=bool, default=not S3_ENABLED)
+
+if (not LOCAL_SERVE_MEDIA_FILES or not LOCAL_SERVE_STATIC_FILES) and not S3_ENABLED:
+    raise ValueError('S3_ENABLED must be true if either media or static files are not served locally')
+
+if S3_ENABLED:
+    AWS_ACCESS_KEY_ID = config('BUCKETEER_AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = config('BUCKETEER_AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = config('BUCKETEER_BUCKET_NAME')
+    AWS_S3_REGION_NAME = config('BUCKETEER_AWS_REGION')
+    AWS_DEFAULT_ACL = None
+    AWS_S3_SIGNATURE_VERSION = config('S3_SIGNATURE_VERSION', default='s3v4')
+    AWS_S3_ENDPOINT_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+
+if not LOCAL_SERVE_STATIC_FILES:
+    STATIC_DEFAULT_ACL = 'public-read'
+    STATIC_LOCATION = 'static'
+    STATIC_URL = f'{AWS_S3_ENDPOINT_URL}/{STATIC_LOCATION}/'
+    STATICFILES_STORAGE = 'example.utils.storage_backends.StaticStorage'
+
+if not LOCAL_SERVE_MEDIA_FILES:
+    PUBLIC_MEDIA_DEFAULT_ACL = 'public-read'
+    PUBLIC_MEDIA_LOCATION = 'media/public'
+
+    MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{PUBLIC_MEDIA_LOCATION}/'
+    DEFAULT_FILE_STORAGE = 'example.utils.storage_backends.PublicMediaStorage'
+
+    PRIVATE_MEDIA_DEFAULT_ACL = 'private'
+    PRIVATE_MEDIA_LOCATION = 'media/private'
+    PRIVATE_FILE_STORAGE = 'example.utils.storage_backends.PrivateMediaStorage'
+
 
 GRAPHENE = {
     "SCHEMA": "blog.schema.schema",
