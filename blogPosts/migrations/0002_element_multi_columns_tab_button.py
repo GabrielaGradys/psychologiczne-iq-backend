@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
             name='Tab',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('color', models.CharField(choices=[('pq_yellow', 'Yellow'), ('pq_light_blue', 'Light Blue'), ('pq_dark_blue', 'Dark Blue')], default='Yellow', max_length=15)),
+                ('color', models.CharField(choices=[('pq_yellow', 'Yellow'), ('pq_light_blue', 'Light Blue')], default='Yellow', max_length=15)),
                 ('title', models.CharField(max_length=200)),
                 ('icon', models.FileField(blank=True, upload_to='')),
                 ('body', ckeditor.fields.RichTextField()),
@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('type', models.CharField(choices=[('File', 'File'), ('Link', 'Link')], default='File', max_length=4)),
-                ('color', models.CharField(choices=[('pq_yellow', 'Yellow'), ('pq_light_blue', 'Light Blue'), ('pq_dark_blue', 'Dark Blue')], default='Yellow', max_length=15)),
+                ('color', models.CharField(choices=[('pq_yellow', 'Yellow'), ('pq_light_blue', 'Light Blue')], default='Yellow', max_length=15)),
                 ('link', models.URLField(blank=True)),
                 ('file', models.FileField(blank=True, upload_to='uploads/')),
                 ('elements', models.ForeignKey(blank=True, default=1, on_delete=django.db.models.deletion.CASCADE, to='blogPosts.element')),
