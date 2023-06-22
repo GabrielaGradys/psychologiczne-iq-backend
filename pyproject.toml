@@ -6,7 +6,7 @@ authors = ["Gabriela Gradys <gabriela.gradys@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 django = "^3.2"
 django-grappelli = "3.0.3"
 django-rest-framework = "0.1.0"
