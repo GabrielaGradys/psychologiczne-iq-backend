@@ -1,7 +1,7 @@
 databases:
-  - name: psychologiczne-iq
-    databaseName: psychologiczne-iq
-    user: psychologiczne-iq
+  - name: psychologiczneIQ
+    databaseName: psychologiczneIQ
+    user: psychologiczneIQ
 
 services:
   - type: web
