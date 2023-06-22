@@ -1,11 +1,13 @@
 databases:
   - name: psychologiczneiq
+    plan: free
     databaseName: psychologiczneiq
     user: psychologiczneiq
 
 services:
   - type: web
-    name: mysite
+    plan: free
+    name: psychologiczneiq-backend
     runtime: python
     buildCommand: "./build.sh"
     startCommand: "gunicorn mysite.wsgi:application"
